@@ -81,7 +81,7 @@ class NLP_Controller(Base_controller):
         collection_name = self.create_collection_name(project_id = project.Projcet_id)
 
         # 2 - get text embedding vector
-        vector  = self.embedding_client.embed_text(text = text,document_type = DocumentTypeEnum.QUERY.value)
+        vector = self.embedding_client.embed_text(text = text,document_type = DocumentTypeEnum.QUERY.value)
 
         if not vector or len(vector) == 0:
             return []
@@ -93,10 +93,10 @@ class NLP_Controller(Base_controller):
             limit = limit
                 )
         
+        print("result of vector db ",result,"\n")
         if not result :
             return []
         
-        print("result of vector db ",result,"\n")
         return result
 
 
@@ -133,9 +133,10 @@ class NLP_Controller(Base_controller):
             limit=limit
         )
 
+        print("result of search keyword",result,"\n")
         if not result:
             return []
-        print("result of search keyword ",result,"\n")
+        
         return result
 
     def RRF(self,vector_results: list, keyword_results: list, k: int = 60):
@@ -143,6 +144,7 @@ class NLP_Controller(Base_controller):
 
         # Vector results
         for rank, result in enumerate(vector_results, start=1):
+            print(rank , result)
             doc_id = result["id"]
 
             scores[doc_id] = scores.get(doc_id, 0) + (
@@ -151,6 +153,9 @@ class NLP_Controller(Base_controller):
 
         # Keyword results
         for rank, result in enumerate(keyword_results, start=1):
+            
+            print(rank , result)
+
             doc_id = result["id"]
 
             scores[doc_id] = scores.get(doc_id, 0) + (
@@ -169,7 +174,7 @@ class NLP_Controller(Base_controller):
             key=lambda x: x["score"],
             reverse=True
         )
-        print("result of RRF ",result,"\n")
+        print("result of RRF ",results,"\n")
         return results
 
     
@@ -200,10 +205,10 @@ class NLP_Controller(Base_controller):
             for chunk_id in chunk_ids
             if chunk_id in chunks_map
         ]
-        
+
         documents = [
             chunk.Chunk_text
-            for chunk in chunks
+            for chunk in ordered_chunks
         ]
 
         rerank_results = self.reranker_client.rerank(

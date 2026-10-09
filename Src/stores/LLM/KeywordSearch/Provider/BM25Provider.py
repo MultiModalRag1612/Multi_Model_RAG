@@ -94,7 +94,10 @@ class BM25Provider(KeywordSearch_Interface):
 
         # Return document IDs with their scores
         return [
-            (col["ids"][i], float(scores[i]))
+            {
+                "id": col["ids"][i],
+                "score": float(scores[i])
+            }
             for i in top_indexes
             if scores[i] > 0
         ]

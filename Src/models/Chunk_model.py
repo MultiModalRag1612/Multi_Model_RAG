@@ -51,7 +51,7 @@ class Chunk_model(Base_model):
 
     async def get_project_chunk(self,project_id:ObjectId,page_no: int = 1,page_size: int = 100):
         async with self.db_client() as session: 
-            stmt = select(Data_chunk).where(Data_chunk.Chunk_project_id ==project_id).offset((page_no - 1)*page_size).limit(page_size)
+            stmt = select(Data_chunk).where(Data_chunk.Chunk_project_id == project_id).offset((page_no - 1)*page_size).limit(page_size)
             result = await session.execute(stmt)
             recodrd = result.scalars().all()
             
