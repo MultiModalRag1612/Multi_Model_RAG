@@ -1,0 +1,43 @@
+services:
+  #fastapi application
+
+
+  #Nginx service
+
+
+  #postgresSQL service
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    ports: 
+      - "5432:5432"
+    volumes:
+        #this is the directory of data in docker hub 
+      - postgres_data:/var/lib/postgresql/data
+    # we will create environment file not write it here because it contain sensetive data 
+    #so we will use env file
+    env_file:
+      - .env/.env.postgres
+    networks:
+      - backend
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  #Qdrant(vectorDB) service
+
+
+  #prometheus service
+
+
+  #Grafana Dashboard service
+
+
+  #Node Exporter service to give all information about machine we deploy in it (system metrics)
+  
+  
+  #postgresSQL Exporter for postgres metrics
