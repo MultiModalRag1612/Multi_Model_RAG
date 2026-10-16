@@ -1,6 +1,21 @@
 services:
 
   #FastAPI application service
+  fastapi:
+    build:
+      context: ..
+      dockerfile: docker/app/Dockerfile 
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    env_file:
+      - .env/.env.application
 
 
 
