@@ -29,9 +29,36 @@ services:
       start_period: 10s
 
   #Qdrant(vectorDB) service
+  #qdrant has its own metrcis and qdrant exporter so we will need ti build qdrant-exporter 
+  qdrant:
+    image: qdrant/qdrant:v1.13.6
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
 
+    # the path of storage in docker image  /qdrant/storage and we mapped in (qdrant_data) local docker
+    #we get /qdrant/storage into qdrant_data
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - backend
+    restart: always
 
   #prometheus service
+  prometheus:
+    image: prom/prometheus:v3.15.0
+    container_name: prometheus
+    ports:
+      - 9090:9090"
+    volumes:
+      - prometheus_data:/prometheus
+      #we need to pass configration file to guide promethus which metrics to mointoring it 
+      #we will overwrite the default config  ==>  prometheus.yml:/etc/prometheus/prometheus.yml with our loacl config 
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - backend
+    restart: always
 
 
   #Grafana Dashboard service
