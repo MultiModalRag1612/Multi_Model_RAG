@@ -46,7 +46,7 @@ services:
     # we will create environment file not write it here because it contain sensetive data 
     #so we will use env file
     env_file:
-      - .env/.env.postgres
+      - ./env/.env.postgres
     networks:
       - backend
     restart: always
@@ -81,7 +81,7 @@ services:
     image: prom/prometheus:v3.15.0
     container_name: prometheus
     ports:
-      - 9090:9090"
+      - "9090:9090"
     volumes:
       - prometheus_data:/prometheus
       #we need to pass configration file to guide promethus which metrics to mointoring it 
@@ -140,9 +140,21 @@ services:
     ports:
       - "9187:9187"
     env_file:
-      - .env/.env.postgres-exporter
+      - ./env/.env.postgres-exporter
     depends_on:
       - postgres
     networks:
       - backend    
     restart: always
+
+# at the final of docker-compose file we need to identify all networks and volumes we have 
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  qdrant_data:
+  prometheus_data:
+  grafana_data:
