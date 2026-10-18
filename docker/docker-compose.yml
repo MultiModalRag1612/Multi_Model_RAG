@@ -10,14 +10,16 @@ services:
       - "8000:8000"
     networks:
       - backend
+    volumes:
+      - fastapi_data:/app/assets
     depends_on:
       postgres:
         condition: service_healthy
     restart: always
     env_file:
-      - .env/.env.application
-
-
+      - ./env/.env.application
+ 
+  
 
   #Nginx service
   nginx:
@@ -158,3 +160,4 @@ volumes:
   qdrant_data:
   prometheus_data:
   grafana_data:
+  fastapi_data:

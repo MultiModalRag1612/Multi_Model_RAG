@@ -19,18 +19,18 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY src/requirements.txt .
+COPY Src/requirements.txt .
 # uv install libraires parellel 
 RUN uv pip install -r requirements.txt --system
 
-COPY src/ .
+COPY Src/ .
 
 RUN mkdir -p app/models/db_schemes/alembic/alembic.ini
 COPY docker/app/alembic.ini  /app/models/db_schemes/alembic/alembic.ini
 # alembic now is in isolated world in build stage he cant see postgres service so we will need to 
 #create entrypoint script that run (after) no (during) build dockerfile image 
 #copy from local (docker/app.entrypoint.sh) to docker /entrypoint.sh
-COPY docker/app.entrypoint.sh /entrypoint.sh
+COPY docker/app/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
