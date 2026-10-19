@@ -23,7 +23,9 @@ class GeminiVLMProvider(LLMinterface):
         self.client = genai.Client(
             api_key=self.api_key
         )
-
+        # Embedding model
+        self.embedding_model_id = None
+        self.embedding_size = 768
         self.logger = logging.getLogger(__name__)
 
 
@@ -113,12 +115,6 @@ class GeminiVLMProvider(LLMinterface):
         )
 
 
-    def set_embedding_model(self,model_id: str,embedding_size: int):
-
-        raise NotImplementedError(
-            "GeminiVLMProvider does not support embeddings"
-        )
-
 
     def generate_text(self,prompt: str,max_output_tokens: int = None,chat_history: list = [],temperature: float = None):
 
@@ -127,11 +123,51 @@ class GeminiVLMProvider(LLMinterface):
         )
 
 
-    def embed_text(self,text: str,document_type: str = None):
+ 
+    def set_embedding_model(
+        self,
+        model_id: str,
+        embedding_size: int = 768
+    ):
+        self.embedding_model_id = model_id
+        self.embedding_size = embedding_size
 
-        raise NotImplementedError(
-            "GeminiVLMProvider does not support embeddings"
-        )
+
+    def embed_text(
+        self,
+        text: str,
+        document_type: str = None
+    ):
+        if not self.client:
+            self.logger.error("Gemini client was not found")
+            return None
+
+        if not self.embedding_model_id:
+            self.logger.error("Embedding model was not found")
+            return None
+
+        try:
+            response = self.client.models.embed_content(
+                model=self.embedding_model_id,
+                contents=text,
+                config=types.EmbedContentConfig(
+                    output_dimensionality=self.embedding_size
+                )
+            )
+
+            if not response or not response.embeddings:
+                self.logger.error(
+                    "Error while embedding text with Gemini"
+                )
+                return None
+
+            return response.embeddings[0].values
+
+        except Exception as error:
+            self.logger.error(
+                f"Error while embedding text with Gemini: {error}"
+            )
+            return None
 
 
     def construct_prompt(self,prompt: str,role: str):

@@ -93,13 +93,11 @@ class NLP_Controller(Base_controller):
             limit = limit
                 )
         
-        print("result of vector db ",result,"\n")
         if not result :
-            return []
+            return False
         
         return result
-
-
+    
     # Keyword Search Indexing
     def index_into_keyword_search(self,project: Project,chunk: List[Data_chunk],chunk_ids: List[int]):
 
@@ -107,7 +105,7 @@ class NLP_Controller(Base_controller):
             project_id=project.Projcet_id
         )
 
-        text = [
+        text = [ 
             c.Chunk_text
             for c in chunk
         ]

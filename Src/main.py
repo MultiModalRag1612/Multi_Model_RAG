@@ -9,8 +9,7 @@ from stores.LLM.KeywordSearch.KeywordSearch_Provider_Factory import KeywordSearc
 #take postgres connection ==> create_async_engine
 from sqlalchemy.ext.asyncio import create_async_engine,AsyncSession   
 from sqlalchemy.orm import sessionmaker 
-from .utils import setup_metrics
-
+from utils import setup_metrics
 
 app =FastAPI()
 

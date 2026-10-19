@@ -22,8 +22,8 @@ class prometheusmiddleware(BaseHTTPMiddleware):
         # get name of endpoint  /   ex/process{id}
         endpoint = request.url.path
 
-        request_count.labels(method=request.method , endpoint=endpoint)._is_observable(duration)
-        request_latency.labels(method=request.method , endpoint=endpoint , status = response.status_code).inc()
+        request_latency.labels(method=request.method , endpoint=endpoint).observe(duration)
+        request_count.labels(method=request.method , endpoint=endpoint , status = response.status_code).inc()
 
         return response
 

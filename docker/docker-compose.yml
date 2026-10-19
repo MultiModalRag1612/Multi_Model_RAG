@@ -108,7 +108,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     env_file:
-      - .env/.env.grafana
+      - ./env/.env.grafana
     depends_on:
       - prometheus
     networks:

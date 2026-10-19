@@ -81,7 +81,7 @@ class CoHereProvider(LLMinterface):
 
 
     # in cohere document type is important because model must know what is the type of input text
-    def embed_text(self, text: str, document_type: str = None):
+    def embed_text(self, text: str, document_type: str = None,batch_size: int = 32):
 
         if not self.client:
             self.logger.error("Cohere client was not found")
@@ -95,20 +95,25 @@ class CoHereProvider(LLMinterface):
 
         if document_type == DocumentTypeEnum.QUERY.value:
             input_type = "search_query"
+        vectors = []
 
-        response = self.client.embed(
-            texts=[self.process_text(text)],
-            model=self.embedding_model_id,
-            input_type=input_type,
-            embedding_types=["float"],
-        )
+        for start in range(0, len(text), batch_size):
+            batch = text[start:start + batch_size]
 
-        if not response or not response.embeddings:
-            self.logger.error("Error while embedding text with Cohere")
-            return None
+            response = self.client.embed(
+                texts=[self.process_text(text) for text in batch],
+                model=self.embedding_model_id,
+                input_type=input_type,
+                embedding_types=["float"],
+            )
 
-        return response.embeddings.float[0]
+            if not response or not response.embeddings:
+                self.logger.error("Error while embedding text batch with Cohere")
+                raise RuntimeError("Cohere returned empty embeddings")
 
+            vectors.extend(response.embeddings.float)
+
+        return vectors
 
 
     def analyze_image(self,image,prompt: str,max_output_tokens: int = None):

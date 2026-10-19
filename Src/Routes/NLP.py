@@ -93,19 +93,19 @@ async def index_project(request:Request,project_id:str,push_request:Push_Request
             )
         inserted_count+= len(page_chunks)
 
-        is_keyword_inserted = nlpcontroller.index_into_keyword_search(
-            project=project,
-            chunk=page_chunks,
-            chunk_ids=chunk_id
-        )
+        # is_keyword_inserted = nlpcontroller.index_into_keyword_search(
+        #     project=project,
+        #     chunk=page_chunks,
+        #     chunk_ids=chunk_id
+        # )
 
-        if not is_keyword_inserted:
-            return JSONResponse(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                content={
-                    "signal": Project_Enum.INSERT_INTO_KEYWORD_SEARCH_ERROR.value
-                }
-            )
+        # if not is_keyword_inserted:
+        #     return JSONResponse(
+        #         status_code=status.HTTP_400_BAD_REQUEST,
+        #         content={
+        #             "signal": Project_Enum.INSERT_INTO_KEYWORD_SEARCH_ERROR.value
+        #         }
+        #     )
         
     return JSONResponse(
         content={
@@ -180,23 +180,23 @@ async def search_index(request:Request,project_id:str,search_request:Search_Requ
         # template_parser = Request.app.template_parser
     )
 
-    result = await nlpcontroller.hybrid_search(
+    result = nlpcontroller.search_vector_db_collection(
         project=project,
-        query=search_request.text,
+        text=search_request.text,
         limit=search_request.limit
-    )
+    ) 
 
     if not result:
      return JSONResponse(
         status_code = status.HTTP_400_BAD_REQUEST,
         content = {
-            "siganl" : Project_Enum.VECTOR_DB_SEARCH_ERROR.value 
+            "signal" : Project_Enum.VECTOR_DB_SEARCH_ERROR.value 
         }
     )
 
     return JSONResponse(
         content = {
-            "siganl" : Project_Enum.VECTOR_DB_SEACH_SUCCESS.value ,
+            "siganl" : Project_Enum.VECTOR_DB_SEARCH_SUCCESS.value ,
             "result" : [res for res in result ]
         }
     ) 
