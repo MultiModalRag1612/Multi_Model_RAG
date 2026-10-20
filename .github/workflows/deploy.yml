@@ -1,9 +1,9 @@
-name: Deploy Develop Branch to Server
+name: Deploy master Branch to Server
 
 on:
   push:
     branches:
-      - develop
+      - master
 
 jobs:
   deploy:
@@ -16,12 +16,12 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.2
         with:
-          host: ${{ secrets.SSH_DEVELOP_HOST_IP }}
+          host: ${{ secrets.SSH_MAIN_HOST_IP }}
           username: besho
-          key: ${{ secrets.SSH_DEVELOP_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_MAIN_PRIVATE_KEY }}
           script: |
             cd /home/besho/work/Multi_Model_RAG
-            git checkout develop
+            git checkout master
             git pull
             sudo systemctl restart rag.service
             echo "Waiting..."
