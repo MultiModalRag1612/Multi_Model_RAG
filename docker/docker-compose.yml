@@ -32,7 +32,7 @@ services:
     depends_on:
       - fastapi
     volumes:
-      - ./default_nginx.conf:etc//nginx/conf.d/default.conf
+      - ./default_nginx.conf:/etc/nginx/conf.d/default.conf:ro
     restart: always
 
   

@@ -25,8 +25,8 @@ RUN uv pip install -r requirements.txt --system
 
 COPY Src/ .
 
-RUN mkdir -p app/models/db_schemes/alembic/alembic.ini
-COPY docker/app/alembic.ini  /app/models/db_schemes/alembic/alembic.ini
+RUN mkdir -p /app/models/db_schemes/alembic
+COPY docker/app/alembic.ini /app/models/db_schemes/alembic/alembic.ini
 # alembic now is in isolated world in build stage he cant see postgres service so we will need to 
 #create entrypoint script that run (after) no (during) build dockerfile image 
 #copy from local (docker/app.entrypoint.sh) to docker /entrypoint.sh

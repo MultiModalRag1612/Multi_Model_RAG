@@ -1,5 +1,10 @@
+#!/bin/sh
 set -e
-echo "Running database mugration"
+
+echo "Running database migration"
+
 cd /app/models/db_schemes/alembic/
-alembic upgrade head 
+alembic -c alembic.ini upgrade head
+
 cd /app
+exec "$@"
