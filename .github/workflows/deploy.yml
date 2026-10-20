@@ -34,7 +34,7 @@ jobs:
               else
                 echo "⏳ Port 80 not ready yet. Retrying in 5 seconds..."
                 sleep 5
-              fi
+              fi  
             done
 
             if ! ss -tuln | grep -q ':80'; then
